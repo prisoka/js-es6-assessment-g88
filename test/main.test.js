@@ -30,10 +30,13 @@ describe('main file', function () {
   })
 
   it('should use object shorthand to declare and destructure objects', function () {
-    const declarations = this.file.match(/\=.*{[^}]*}/g)
+    const declarations = [
+      this.file.match(/module\.exports.*/g),
+      this.file.match(/\=\>.*\{([^}]*)\}/g),
+    ].filter(match => match)
 
     if (declarations) {
-      const actual = declarations.join('').match(/\:/g)
+      const actual = declarations.reduce((a, b) => a.concat(b)).join('').match(/\:/g)
       expect(actual, 'Use object shorthand throughout the file').to.be.null
     }
   })
