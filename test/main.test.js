@@ -36,7 +36,9 @@ describe('main file', function () {
     ].filter(match => match)
 
     if (declarations) {
-      const actual = declarations.reduce((a, b) => a.concat(b)).join('').match(/\:/g)
+      const decText = declarations.reduce((a, b) => a.concat(b)).join('')
+      const actual = decText.split('\n').filter(el => !el.match(/\?.*\:/g)).join('').match(/\:/g)
+
       expect(actual, 'Use object shorthand throughout the file').to.be.null
     }
   })
