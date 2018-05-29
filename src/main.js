@@ -1,17 +1,16 @@
-function getEmails (people, options) {
-  options = options || {}
-  var withNames = options.withNames || false
-  var onlyActive = options.onlyActive || false
+const isActive = (person) => {return person.isActive};
 
+const getEmails = (people,
+                  { withNames, onlyActive }={ withNames: false, onlyActive: false } ) => {
   if (onlyActive) {
     people = people.filter(isActive)
   }
 
-  return people.map(function (person) {
-    var result = ''
+  return people.map(person => {
+    let result = ''
 
     if (withNames) {
-      result = person.name + ' <' + person.email + '>'
+      result = `${person.name} <${person.email}>`
     } else {
       result = person.email
     }
@@ -20,44 +19,22 @@ function getEmails (people, options) {
   }).join(', ')
 }
 
-function getAddresses (people, options) {
-  options = options || {}
-  var onlyActive = options.onlyActive || false
+const getAddresses = (people,
+                      { onlyActive }={ onlyActive: false } ) => {
+  if (onlyActive) { people = people.filter(isActive) };
 
-  if (onlyActive) {
-    people = people.filter(isActive)
-  }
-
-  return people.map(function (person) {
-    var address = person.address
-    var fullAddress = person.name + '\n' + address.line1 + '\n'
-
-    if (address.line2) {
-      fullAddress += address.line2 + '\n'
-    }
-
-    fullAddress += address.city + ', ' + address.state
-    return fullAddress
+  return people.map(({ name, address: { line1, line2, city, state} }) => {
+    const apt = line2 ? `${line2}\n` : ''
+    return `${name}\n${line1}\n${apt}${city}, ${state}`
   }).join('\n\n')
 }
 
-function getYoungest (people) {
-  people.sort(function (personA, personB) {
+const getYoungest = (people) => {
+  const [ youngest, ...others ] = people.sort((personA, personB) => {
     return personA.age - personB.age
   })
 
-  return {
-    youngest: people[0],
-    others: people.slice(1)
-  }
+  return { youngest, others }
 }
 
-function isActive (person) {
-  return person.isActive
-}
-
-module.exports = {
-  getEmails: getEmails,
-  getAddresses: getAddresses,
-  getYoungest: getYoungest
-}
+module.exports = { getEmails, getAddresses, getYoungest }
