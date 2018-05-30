@@ -1,4 +1,4 @@
-const isActive = (person) => {return person.isActive};
+const isActive = person => {person.isActive};
 
 const getEmails = (people,
                   {withNames, onlyActive }={ withNames: false, onlyActive: false}) => {
